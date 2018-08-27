@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<title>Document</title>
+	<link rel="stylesheet" href="../css/bootstrap.min.css">
+	<script type="text/javascript" src="../js/jquery-3.3.1.min.js"></script>
+	<script type="text/javascript" src="../js/bootstrap.js"></script>
+
+	<!-- bootstrap-paginator 显示分页 -->
+	<script type="application/javascript" src="../js/bootstrap-paginator.min.js"></script>
+
+	<!-- 工具类 -->
+	<script type="application/javascript" src="../js/util.js"></script>
+
+	<!-- bootstrap-table -->
+	<link href="../css/bootstrap-table.min.css" rel="stylesheet">
+	<script src="../js/bootstrap-table.min.js"></script>
+	<script src="../js/bootstrap-table-zh-CN.min.js"></script>
+
+	<style type="text/css">
+	.table-striped > tbody > tr:nth-child(even) > td{
+		background-color: rgb(24, 245, 247);
+	} 
+	.table-striped > tbody > tr:nth-child(odd) > th {
+	    background-color: rgb(242, 245, 247);
+	}
+	</style>
+</head>
+<body>
+	<div>
+		<input type="text" id="search" onblur="customSearch()">
+		<table id="table"></table>
+		
+	</div>
+<script type="text/javascript">
+	var pageNumber = 1;
+	var pageSize = 10;
+	var data = getJSONS("https://api.ziotc.com/sandbox/v1/app/list", "get", {
+				"Authorization" : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJEQ0VFMkFCODU5NEY1MDM4RkVGMkQyNTQ3MzIyREE5MUE3NEFCNiIsInNjb3BlcyI6WyJST0xFX0VOVEVSUFJJU0UiXSwiaXNzIjoiaHR0cHM6Ly9hcGkuemlvdGMuY29tIiwiaWF0IjoxNTMxODk2Nzk3LCJleHAiOjE1MzMxOTI3OTd9.9nH6yHu1XtF4yRkgIL-fkLPTH-XfEY76dzy0AZ1ATpegdPIMaVR8w-U6pH9PYMyT-IBOmBXFEJWH0-k1JC2ljg'
+			}, {});
+	var total = data.data.length;
+	$('#table').bootstrapTable({
+            url: 'https://api.ziotc.com/sandbox/v1/app/page',         //请求后台的URL（*）
+            method: 'get',                      //请求方式（*）
+            ajaxOptions:{
+		        headers : {
+					"Authorization" : 'Bearer eyJhbGciOiJIUzUxMiJ9.eyJzdWIiOiJEQ0VFMkFCODU5NEY1MDM4RkVGMkQyNTQ3MzIyREE5MUE3NEFCNiIsInNjb3BlcyI6WyJST0xFX0VOVEVSUFJJU0UiXSwiaXNzIjoiaHR0cHM6Ly9hcGkuemlvdGMuY29tIiwiaWF0IjoxNTMxODk2Nzk3LCJleHAiOjE1MzMxOTI3OTd9.9nH6yHu1XtF4yRkgIL-fkLPTH-XfEY76dzy0AZ1ATpegdPIMaVR8w-U6pH9PYMyT-IBOmBXFEJWH0-k1JC2ljg',
+					"Accept": "application/json"
+				}
+		    },
+            striped: true,                      //是否显示行间隔色   
+            cache: false,                       //是否使用缓存，默认为true，所以一般情况下需要设置一下这个属性（*）
+            pagination: true,                   //是否显示分页（*）
+            sortable: true,                     //是否启用排序
+            sortOrder: "asc",                   //排序方式
+            sidePagination: "server",           //分页方式：client客户端分页，server服务端分页（*）
+            pageNumber:pageNumber,                       //初始化加载第一页，默认第一页
+            pageSize: pageSize,                       //每页的记录行数（*）
+            pageList: [10, 25, 50, 100],        //可供选择的每页的行数（*）
+
+            strictSearch: true,
+            minimumCountColumns: 2,             //最少允许的列数
+            clickToSelect: true,                //是否启用点击选中行
+
+            silentSort: false,                  //分页时保留排序
+            responseHandler:function (res) {    //将返回的数据转成需要的格式
+                return {
+                	"total" : total,
+                	"rows" : res.data
+                };
+            },
+
+            queryParamsType:'limit',            //启用传参
+			queryParams: queryParams,		    //传参函数
+
+            columns: [{
+                checkbox: true
+            }, {
+                field: 'agreement',
+                title: '接入协议'
+            }, {
+                field: 'appToken',
+                title: '应用Token'
+            }, {
+                field: 'createDate',
+                title: '创建时间'
+            }, {
+                field: 'name',
+                title: '应用名称'
+            },{
+                field: 'remark',
+                title: '备注信息'
+            },]
+        });
+
+		function queryParams(params) {
+		    return {
+		        page: params.offset/params.limit+1,
+		        size: params.limit,
+		        agreement: $("#search").val(),
+		        appKey: $("#search").val(),
+		        appToken: $("#search").val(),
+		        cycleValue: $("#search").val(),
+		        isActive: $("#search").val(),
+		        name: $("#search").val(),
+		        remark: $("#search").val(),
+		        sceneName: $("#search").val(),
+		        versionNumber: $("#search").val(),
+		    };
+		}
+
+		function customSearch(text) {
+		    $("#table").bootstrapTable('refresh');//刷新Table，Bootstrap Table 会自动执行重新查询
+		}
+</script>
+</body>
+</html>
