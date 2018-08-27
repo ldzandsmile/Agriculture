@@ -1,9 +1,0 @@
-eclipse.preferences.version=1
-encoding//WebRoot/MyJsp.jsp=UTF-8
-encoding//WebRoot/analysis.jsp=UTF-8
-encoding//WebRoot/monitor.jsp=UTF-8
-encoding//WebRoot/warning.jsp=UTF-8
-encoding//WebRoot/welcome.jsp=UTF-8
-encoding//src/com/zhisolution/servlet/InitServlet.java=UTF-8
-encoding//src/com/zhisolution/util/HttpUtils.java=UTF-8
-encoding/<project>=UTF-8
